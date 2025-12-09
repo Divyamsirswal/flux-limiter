@@ -2,14 +2,14 @@
 
 Flux is a distributed rate-limiting middleware written in **Go**, designed to protect APIs from "Thundering Herd" events and DDoS attacks. It uses a **Token Bucket** algorithm implemented via **Redis Lua scripts** to ensure atomic operations and prevent race conditions in a distributed environment.
 
-## 🚀 Key Features
+##  Key Features
 * **Distributed State:** synchronizes request counts across multiple application instances using Redis.
 * **Race Condition Proof:** Uses atomic Lua scripts to handle `Check-Then-Set` logic in a single transaction.
 * **Token Bucket Algorithm:** Allows for short bursts of traffic while enforcing a strict long-term rate limit (unlike fixed windows).
 * **Zero-Latency Fail-Open:** Designed to fail open if Redis is unreachable to prevent service outages.
 * **Containerized:** Fully Dockerized with a multi-stage build (Artifact size < 15MB).
 
-## 🛠️ Architecture
+##  Architecture
 The diagram below illustrates the request flow and components of the Flux rate limiter.
 
 ![Flux Rate Limiter Architecture](flux.png)
@@ -22,7 +22,7 @@ The diagram below illustrates the request flow and components of the Flux rate l
 6.  **Decision:** Based on the result, the middleware either allows the request to proceed to the application's business logic or blocks it.
 7.  **Response:** The application sends the appropriate HTTP response back to the client: a `200 OK` if the request was allowed, or a `429 Too Many Requests` error if it was blocked.
 
-## ⚡ Technical Depth (Why Lua?)
+##  Technical Depth (Why Lua?)
 Naive implementations use a 2-step process: `GET` current limit, then `INCR`. In a high-concurrency environment (10k RPS), two requests can read the same value simultaneously, allowing both to pass and violating the limit.
 
 Flux solves this by executing the logic **inside Redis** using Lua:
@@ -37,7 +37,7 @@ else
 end
 ````
 
-## 📊 Benchmarks
+##  Benchmarks
 
   * **Latency Overhead:** \< 2ms per request.
   * **Throughput:** Handles 10,000+ RPS on a standard instance.
