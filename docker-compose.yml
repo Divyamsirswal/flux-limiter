@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: flux-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - flux-net
+
+  app:
+    build: .
+    container_name: flux-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis 
+    environment:
+      - REDIS_ADDR=redis:6379 
+    networks:
+      - flux-net
+
+networks:
+  flux-net:
+    driver: bridge
